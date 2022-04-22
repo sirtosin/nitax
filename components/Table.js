@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
+import axios from "axios";
+
 const Table = () => {
   const Api_Url = "https://swapi.dev/api/planets/?page=";
   const [info, setInfo] = useState([]);
@@ -15,12 +17,19 @@ const Table = () => {
   useEffect(() => {
     setLoading(true);
     setTimeout(async () => {
-      setLoading(false);
-      const resp = await fetch(Api_Url + page);
-      const result = await resp.json();
-      console.log("new", result.results);
-      setInfo(result.results);
-    }, 2000);
+      const resp = await axios.get(Api_Url + page).then(
+        (response) => {
+          if (response.status === 200) {
+            console.log("response", response);
+            setInfo(response.data.results);
+            setLoading(false);
+          }
+          else {
+            setLoading(true);
+          }
+        }
+      ).catch(err => console.log(err));
+    }, 1000);
   }, [page]);
 
   return (
@@ -79,7 +88,7 @@ const Table = () => {
             </table>
             <ReactPaginate
               previousLabel={"previous"}
-              nextLabel={page >= 6 ? "last" :"next"}
+              nextLabel={page >= 6 ? "last" : "next"}
               pageCount={6}
               breakLabel={"..."}
               marginPagesDisplayed={2}
@@ -104,7 +113,9 @@ const Table = () => {
               }
               breakClassName={""}
               breakLinkClassName={""}
+              // activeLinkClassName={"bg-gray-200"}
               activeClassName={"bg-gray-200"}
+              forcePage={page - 1}
             />
           </section>
         </>
