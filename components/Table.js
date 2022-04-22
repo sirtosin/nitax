@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
-const Table = ({ results }) => {
+const Table = () => {
   const Api_Url = "https://swapi.dev/api/planets/?page=";
-  const [info, setInfo] = useState(results);
+  const [info, setInfo] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const handlePageClick = async (data) => {
